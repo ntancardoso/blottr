@@ -1,4 +1,5 @@
 <ion-content class="padding">
+  <form [ngFormModel]="discloseForm"  >
   <ion-card>
     <ion-row>
       <ion-col>
@@ -6,7 +7,7 @@
       </ion-col>
       <ion-col>
         <ion-label stacked> Ano ang nangyari?</ion-label>
-        <ion-textarea rows=12 placeholder="cat-calling"></ion-textarea>
+        <ion-textarea rows=12 ngControl="what" [(ngModel)]="disclose.what"></ion-textarea>
       </ion-col>
     </ion-row>
   </ion-card>
@@ -18,7 +19,7 @@
       <ion-col>
         <ion-item>
         <ion-label stacked> Kailan ito nangyari?</ion-label>
-        <ion-datetime displayFormat="MMM DD YYYY h:mm A" placeholder=""></ion-datetime>
+        <ion-datetime displayFormat="MMM DD YYYY h:mm A" ngControl="when" [(ngModel)]="disclose.when"></ion-datetime>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -30,10 +31,10 @@
       </ion-col>
       <ion-col>
         <ion-label stacked> Saan Ito Nangyari?</ion-label>
-        <ion-input type="text" placeholder="Street Address"></ion-input>
-        <ion-input type="text" placeholder="District/Barangay"></ion-input>
-        <ion-input type="text" placeholder="City/Municipality"></ion-input>
-        <ion-input type="text" placeholder="Province"></ion-input>
+        <ion-input type="text" placeholder="Street Address" ngControl="where_street" [(ngModel)]="disclose.where_street"></ion-input>
+        <ion-input type="text" placeholder="District/Barangay" ngControl="where_locality" [(ngModel)]="disclose.where_locality"></ion-input>
+        <ion-input type="text" placeholder="City/Municipality" ngControl="where_city" [(ngModel)]="disclose.where_city"></ion-input>
+        <ion-input type="text" placeholder="Province" ngControl="where_province" [(ngModel)]="disclose.where_province"></ion-input>
       </ion-col>
     </ion-row>
   </ion-card>
@@ -44,10 +45,11 @@
       </ion-col>
       <ion-col>
         <ion-label stacked> I-kwento Paano nangyari?</ion-label>
-        <ion-textarea rows=12 placeholder="How It Happened: People Involved: Witnesses:"></ion-textarea>
+        <ion-textarea rows=12 placeholder="How It Happened: People Involved: Witnesses:" ngControl="how" [(ngModel)]="disclose.how"></ion-textarea>
       </ion-col>
     </ion-row>
   </ion-card>
 
-  <button block secondary>Submit Now.</button>
+  <button block secondary (click)="submit()" [disabled]="!discloseForm.valid">Submit Now.</button>
+  </form>
 </ion-content>

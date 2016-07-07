@@ -1,0 +1,32 @@
+<ion-content class="splash padding">
+  <div class="branding">
+    <img src="img/blottr_light.png" alt="Blottr Logo" width=100%>
+    <div style="color: white" class="tagline">Alert. Disclose. Prevent.</div>
+    <p style="color: white">Help Protect Our Safety</p>
+    <span style="color: red">
+      &nbsp;{{account.error}}
+    </span>
+    <form [ngFormModel]="loginForm"  >
+    <ion-list class="login">
+        <ion-item>
+          <ion-label floating>Username</ion-label>
+          <ion-input type="text" ngControl="username" [(ngModel)]="account.username"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label floating>Password</ion-label>
+          <ion-input type="password" ngControl="password" [(ngModel)]="account.password"></ion-input>
+        </ion-item>
+
+    </ion-list>
+    <ion-buttons>
+      <button (click)="login()" [disabled]="!loginForm.valid">
+      Sign In
+      </button>
+      <button (click)="logout()">
+      Sign Out
+      </button>
+    </ion-buttons>
+    </form>
+  </div>
+</ion-content>
