@@ -4,6 +4,11 @@ import {NavController, ViewController,  Events} from 'ionic-angular';
 import {Account} from '../../models/account';
 import {AccountService} from '../../services/account-service/account-service';
 
+
+/**
+ *  Login Page
+ * 
+ **/
 @Component({
   templateUrl: 'build/pages/login/login.html'
 })
@@ -17,6 +22,7 @@ export class LoginPage {
     events: Events,
     private accountServices: AccountService) {
 
+    // Setup validation
     this.account = new Account();
     this.loginForm = formBuilder.group({
       username: ["", Validators.required],
@@ -26,17 +32,23 @@ export class LoginPage {
     events.subscribe("loginSuccess", () => {
       this.viewController.dismiss({"success":true});
     });
+
+    localStorage.clear();
   }
 
 
+  /**
+    * Authenticate using login page's form
+    */
   login() {
     console.log("Login account");
-    console.log(this.account);
     this.account.error = "";
-    this.accountServices.login(this.account);
-    
+    this.accountServices.tokenLogin(this.account);
   }
 
+  /**
+    * Logout user
+    */
   logout() {
     console.log("Logout account");
     this.accountServices.logout();

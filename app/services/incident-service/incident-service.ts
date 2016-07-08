@@ -35,10 +35,16 @@ export class IncidentService {
   }
 
   checkHeaders() {
-    if(localStorage.getItem("token")!==undefined && localStorage.getItem("token")!="")
+    if(!(localStorage.getItem("token")===undefined) && localStorage.getItem("token")!="")
       this.headers.set('X-CSRF-Token',localStorage.getItem("token"));
-    if(localStorage.getItem("cookie")!==undefined && localStorage.getItem("cookie")!="")
-      this.headers.set('Authorization',localStorage.getItem("cookie"));
+    if(!(localStorage.getItem("service_token")===undefined) && localStorage.getItem("service_token")!="")
+      this.headers.set('Authorization', "Basic "+btoa(localStorage.getItem("service_token")+":"));
+    //if(localStorage.getItem("cookie")!==undefined && localStorage.getItem("cookie")!="")
+    //  this.headers.set('Authorization',localStorage.getItem("cookie"));
+  }
+
+  getProvince() {
+    return this.http.get("data/province.json");
   }
 
 }
