@@ -1,13 +1,13 @@
-<ion-content>
+<ion-content class="alert">
   <div>
-    <button block danger>
+    <button (click)="distressCall()" block danger>
 		DISTRESS CALL
 	</button>
   </div>
   <div>
-    <button block secondary>
+    <button (click)="toSafety()" block secondary>
 		GET ME TO SAFETY
 	</button>
   </div>
-  <div id="myMap"></div>
+  <div id="map"></div>
 </ion-content>

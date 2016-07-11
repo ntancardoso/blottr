@@ -15,7 +15,7 @@ export class AccountService {
   db: Storage = new Storage(SqlStorage);
 
   constructor(http: Http,
-    public events: Events) {
+    private events: Events) {
     this.http = http;
   }
 
@@ -33,10 +33,7 @@ export class AccountService {
     * @param model with username and password
     */
   simpleLogin(model) {
-    this.checkHeaders();
-    if (app_config.is_debug)
-      console.log(this.headers);
-    return this.http.post(app_config.api_url + app_config.login, JSON.stringify(model), { headers: this.headers });
+    return this.http.post(app_config.api_url + app_config.login, JSON.stringify(model), { headers: this.authHeaders(this.headers) });
   }
 
 
@@ -45,11 +42,8 @@ export class AccountService {
     * @param model with username and password
     */
   login(model) {
-    this.checkHeaders();
-    if (app_config.is_debug)
-      console.log(this.headers);
 
-    return this.http.post(app_config.api_url + app_config.login, JSON.stringify(model), { headers: this.headers }).subscribe(
+    return this.http.post(app_config.api_url + app_config.login, JSON.stringify(model), { headers: this.authHeaders(this.headers) }).subscribe(
       data => {
         if (app_config.is_debug)
           console.log(data);
@@ -77,18 +71,15 @@ export class AccountService {
     * @param model with username and password
     */
   tokenLogin(model) {
-    if (app_config.is_debug)
-      console.log(this.headers);
-
     // Get CSRF Token
-    return this.http.post(app_config.api_url + app_config.token, '', { headers: this.headers }).subscribe(
+    return this.http.post(app_config.api_url + app_config.token, '', { headers: this.authHeaders(this.headers) }).subscribe(
       data => {
         if (app_config.is_debug)
           console.log(data);
 
         // Use token as X-CSRF-Token header   
         localStorage.setItem("token", JSON.parse(JSON.parse(JSON.stringify(data))._body).token);
-        this.checkHeaders();
+        this.headers = this.authHeaders(this.headers);
 
         // Set user credentials as Authorization header
         this.headers.set("Authorization", "Basic " + btoa(model.username + ":" + model.password));
@@ -99,7 +90,7 @@ export class AccountService {
 
             // Replace Authorization header with the generated service token
             localStorage.setItem("service_token", JSON.parse(JSON.parse(JSON.stringify(data))._body).token);
-            this.checkHeaders();
+            this.headers = this.authHeaders(this.headers);
 
             if (app_config.is_debug)
               console.log(data);
@@ -165,14 +156,17 @@ export class AccountService {
   /**
     * Updates headers if available
     */
-  checkHeaders() {
-    if (!(localStorage.getItem("token") === undefined) && localStorage.getItem("token") != "")
-      this.headers.set('X-CSRF-Token', localStorage.getItem("token"));
-    if (!(localStorage.getItem("service_token") === undefined) && localStorage.getItem("service_token") != "")
-      this.headers.set('Authorization', "Basic " + btoa(localStorage.getItem("service_token") + ":"));
+  public authHeaders(headers: Headers) {
+    if (!(localStorage.getItem("token") === undefined) && localStorage.getItem("token")!=null && localStorage.getItem("token") != "")
+      headers.set('X-CSRF-Token', localStorage.getItem("token"));
+    if (!(localStorage.getItem("service_token") === undefined) && localStorage.getItem("service_token")!=null && localStorage.getItem("service_token") != "")
+      headers.set('Authorization', "Basic " + btoa(localStorage.getItem("service_token") + ":"));
     // Cookie header is required to use same session in Drupal by default. This is not working because setting Cookie header is not allowed.
     // if(localStorage.getItem("cookie")!==undefined && localStorage.getItem("cookie")!="")
     //   this.headers.set('Authorization',localStorage.getItem("cookie"));
+    if (app_config.is_debug)
+      console.log(headers);
+    return headers;
   }
 
 }
