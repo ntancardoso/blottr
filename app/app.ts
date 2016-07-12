@@ -25,7 +25,7 @@ export class Blottr {
     private locationService: LocationService,
     private events: Events) {
 
-    this.rootPage = IntroPage;
+    //this.rootPage = IntroPage;
 
     platform.ready().then(() => {
 

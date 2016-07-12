@@ -56,7 +56,13 @@ export class DisclosePage {
 
 
   submit() {
-    this.incidentService.disclose(this.disclose.getData());
+
+    this.locationService.geocode(this.getLocation(this.disclose)).subscribe(location => {
+      this.disclose.where_lat = location.lat;
+      this.disclose.where_lon = location.lon;
+      this.incidentService.disclose(this.disclose.getData());
+    });
+
   }
 
 
@@ -75,6 +81,32 @@ export class DisclosePage {
         console.log(error);
       }
     );
+  }
+
+
+  getLocation(d: Disclose) {
+
+    let location = new Location();
+
+    location.premise = d.where_premise;
+    location.street = d.where_street;
+    location.neighborhood = d.where_locality;
+    location.city = d.where_city;
+    location.province = "Metro Manila"
+    location.country = "Philippines"
+
+    // Find province name
+    for (let p in this.provinces) {
+      if (this.provinces[p].code == d.where_province) {
+        location.province = this.provinces[p].name;
+        if (app_config.is_debug)
+          console.log("Province found on list: " + location.province);
+        break;
+      }
+
+    }
+
+    return location;
   }
 
 

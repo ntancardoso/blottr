@@ -1,5 +1,5 @@
-    import {Component} from '@angular/core';
-import {NavController, Modal} from 'ionic-angular';
+import {Component, ViewChild} from '@angular/core';
+import {NavController, Modal, Slides} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 import {RegisterPage} from '../register/register';
 import {TabsPage} from '../tabs/tabs';
@@ -8,6 +8,8 @@ import {TabsPage} from '../tabs/tabs';
   templateUrl: 'build/pages/intro/intro.html'
 })
 export class IntroPage {
+  @ViewChild('introSlider') slider: Slides;
+
   constructor(private navController: NavController) {
 
   }
@@ -31,5 +33,9 @@ export class IntroPage {
   registerPage() {
     let modalPage = Modal.create(RegisterPage);
     this.navController.present(modalPage);
+  }
+
+  nextSlide() {
+    this.slider.slideNext();
   }
 }

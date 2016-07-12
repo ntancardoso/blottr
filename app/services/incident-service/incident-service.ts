@@ -29,7 +29,7 @@ export class IncidentService {
   /**
     * List all incidents
     */
-  getIncidents(city) {
+  getIncidentsByCity(city) {
     //TODO get incidents within the area
     return this.http.get(app_config.json_url + app_config.incident_map_filter + city);
   }

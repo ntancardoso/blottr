@@ -1,6 +1,7 @@
 import {Storage, SqlStorage, Events} from "ionic-angular";
 import {Injectable} from "@angular/core";
 import {Http, Headers} from '@angular/http';
+import {Observable} from 'rxjs/Rx';
 import {Location} from '../../models/location';
 import app_config = require('../../globals');
 
@@ -41,6 +42,60 @@ export class LocationService {
     }
   }
 
+  /**
+    * Update the coordinates of the address provided
+    * @param location
+    */
+  geocode(location: Location) {
+
+    return Observable.create(observer => {
+      let addr = "";
+      if (location.premise)
+        addr += location.premise + ", ";
+      if (location.street)
+        addr += location.street + ", ";
+      if (location.neighborhood)
+        addr += location.neighborhood + ", ";
+      if (location.city)
+        addr += location.city + ", ";
+      if (location.province)
+        addr += location.province + " ";
+
+
+      if (this.geocoder) {
+        this.geocoder.geocode({ 'address': addr }, (results, status) => {
+          if (status == google.maps.GeocoderStatus.OK) {
+
+            if (results) {
+              if (app_config.is_debug)
+                console.log(JSON.stringify(results));
+
+              let latLng = JSON.parse(JSON.stringify(results[0].geometry.location));
+
+              location.lat = latLng.lat;
+              location.lon = latLng.lng;
+
+              if (app_config.is_debug) {
+                console.log("lat " + latLng.lat);
+                console.log("lng " + latLng.lng);
+              }
+
+              observer.next(location);
+            } else {
+              console.log("No results found");
+            }
+          } else {
+            console.log("Geocoder failed due to: " + status);
+          }
+          observer.complete();
+        });
+
+      }
+    }
+    );
+
+  }
+
 
 
   /**
@@ -58,8 +113,8 @@ export class LocationService {
       let latlng = new google.maps.LatLng(lat, lon);
       this.geocoder.geocode({ 'location': latlng }, (results, status) => {
         if (status == google.maps.GeocoderStatus.OK) {
-          if (app_config.is_debug)
-            console.log(JSON.stringify(results));
+          //if (app_config.is_debug)
+          //  console.log(JSON.stringify(results));
 
           if (results[1]) {
             for (var i = 0; i < results[0].address_components.length; i++) {
@@ -110,6 +165,36 @@ export class LocationService {
     if (this.myLocation)
       return this.myLocation.city;
     return null;
+  }
+
+
+  /**
+    * Creates a map
+    * @param the div id where map will be created
+    */
+  createMap(mapId: string) {
+
+    let latLng = new google.maps.LatLng(this.myLocation.lat, this.myLocation.lon);
+
+    let mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+
+    let map = new google.maps.Map(document.getElementById(mapId), mapOptions);
+
+    return map;
+  }
+
+  /**
+ * Centers the map on the provided latitude and longitude
+ * @param map
+ * @param latitude
+ * @param longitude
+ **/
+  centerMap(map, lat, lon) {
+    map.setCenter(new google.maps.LatLng(lat, lon));
   }
 
 

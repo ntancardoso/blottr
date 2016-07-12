@@ -43,27 +43,12 @@ export class AlertPage {
     this.location = this.locationService.getCachedLocation();
     let latLng = new google.maps.LatLng(this.location.lat, this.location.lon);
 
-    let mapOptions = {
-      center: latLng,
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-
-    this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    this.map = this.locationService.createMap("map");
     this.locationService.addMarker(this.map, latLng, app_config.me_icon, "Me");
   }
 
 
-  /**
-   * Centers the map on the provided latitude and longitude
-   * @param latitude
-   * @param longitude
-   **/
-  centerMap(lat, lon) {
-    if (this.map) {
-      this.map.setCenter(new google.maps.LatLng(lat, lon));
-    }
-  }
+
 
 
   distressCall() {
@@ -82,7 +67,7 @@ export class AlertPage {
   toSafety() {
     if (this.map) {
       this.location = this.locationService.getCachedLocation();
-      this.centerMap(this.location.lat, this.location.lon)
+      this.locationService.centerMap(this.map, this.location.lat, this.location.lon)
       this.locationService.searchNearby(this.map, app_config.search_types, app_config.search_icon);
     }
 

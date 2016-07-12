@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/common";
-import {NavController, ViewController,  Events} from 'ionic-angular';
+import {NavController, ViewController, Events} from 'ionic-angular';
 import {Account} from '../../models/account';
 import {AccountService} from '../../services/account-service/account-service';
 
@@ -30,7 +30,7 @@ export class LoginPage {
     });
 
     events.subscribe("loginSuccess", () => {
-      this.viewController.dismiss({"success":true});
+      this.viewController.dismiss({ "success": true });
     });
 
     localStorage.clear();
@@ -52,6 +52,14 @@ export class LoginPage {
   logout() {
     console.log("Logout account");
     this.accountServices.logout();
+  }
+
+  /**
+  * Cancel
+  */
+  cancel() {
+    console.log("Cancel Sign In");
+    this.viewController.dismiss({ "cancel": false });
   }
 }
 

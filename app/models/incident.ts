@@ -1,12 +1,15 @@
 export class Incident {
 
-    incident: {
-        nid: string;
-        title: string;
-        details: string;
-        city: string;
-        geocode: string;
-        media: string
-    }
+    nid: string;
+    title: string;
+    details: string;
+    city: string;
+    media: string;
+    when: string;
+    dependent_locality: string;
+    premise: string;
+    thoroughfare: string;
+    latitude: number;
+    longitude: number;
 
 }

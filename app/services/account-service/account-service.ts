@@ -149,7 +149,55 @@ export class AccountService {
     * @param user account model
     */
   createAccount(model) {
+    // Get CSRF Token
+    return this.http.post(app_config.api_url + app_config.token, '', { headers: this.authHeaders(this.headers) }).subscribe(
+      data => {
+        if (app_config.is_debug)
+          console.log(data);
 
+        // Use token as X-CSRF-Token header   
+        localStorage.setItem("token", JSON.parse(JSON.parse(JSON.stringify(data))._body).token);
+        this.headers = this.authHeaders(this.headers);
+
+        let registerData = {
+          "name": model.username,
+          //"password": model.password,
+          "mail": model.email,
+          "field_contact_numbers": {
+            "und": [
+              { "value": model.contact_no }
+            ]
+          }
+        }
+
+        // Submit new user for registration
+        this.http.post(app_config.api_url + app_config.register, JSON.stringify(registerData), { headers: this.headers }).subscribe(
+          data => {
+
+            if (app_config.is_debug)
+              console.log(data);
+
+            this.events.publish("registerSuccess");
+
+          },
+          error => {
+            console.log("register error");
+
+            if (app_config.is_debug)
+              console.log(error);
+
+            // Set account.error to display error message on screen
+            model.error = JSON.parse(JSON.parse(JSON.stringify(error))._body);
+          }
+        );
+
+
+      },
+      error => {
+        console.log("Error getting CSRF token");
+      }
+
+    );
   }
 
 
@@ -157,9 +205,9 @@ export class AccountService {
     * Updates headers if available
     */
   public authHeaders(headers: Headers) {
-    if (!(localStorage.getItem("token") === undefined) && localStorage.getItem("token")!=null && localStorage.getItem("token") != "")
+    if (!(localStorage.getItem("token") === undefined) && localStorage.getItem("token") != null && localStorage.getItem("token") != "")
       headers.set('X-CSRF-Token', localStorage.getItem("token"));
-    if (!(localStorage.getItem("service_token") === undefined) && localStorage.getItem("service_token")!=null && localStorage.getItem("service_token") != "")
+    if (!(localStorage.getItem("service_token") === undefined) && localStorage.getItem("service_token") != null && localStorage.getItem("service_token") != "")
       headers.set('Authorization', "Basic " + btoa(localStorage.getItem("service_token") + ":"));
     // Cookie header is required to use same session in Drupal by default. This is not working because setting Cookie header is not allowed.
     // if(localStorage.getItem("cookie")!==undefined && localStorage.getItem("cookie")!="")

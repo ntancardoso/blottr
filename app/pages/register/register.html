@@ -3,5 +3,35 @@
     <img src="img/blottr_light.png" alt="Blottr Logo" width=100%>
     <div style="color: white" class="tagline">Alert. Disclose. Prevent.</div>
     <p style="color: white">Help Protect Our Safety</p>
+    <span style="color: red">
+      &nbsp;{{account.error}}
+    </span>
+    <form [ngFormModel]="registerForm"  >
+    <ion-list class="register">
+        <ion-item>
+          <ion-label floating>Username</ion-label>
+          <ion-input type="text" ngControl="username" [(ngModel)]="account.username"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label floating>E-mail</ion-label>
+          <ion-input type="text" ngControl="email" [(ngModel)]="account.email"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label floating>Contact No.</ion-label>
+          <ion-input type="text" ngControl="contact_no" [(ngModel)]="account.contact_no"></ion-input>
+        </ion-item>
+
+    </ion-list>
+    <ion-buttons>
+      <button (click)="register()" [disabled]="!registerForm.valid">
+      Register
+      </button>
+      <button (click)="cancel()" >
+      Cancel
+      </button>
+    </ion-buttons>
+    </form>
   </div>
 </ion-content>
