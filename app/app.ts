@@ -3,6 +3,7 @@ import {Platform, ionicBootstrap, Storage, LocalStorage, SqlStorage, Events} fro
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
 import {IntroPage } from './pages/intro/intro';
+import {BlankPage } from './pages/blank/blank';
 import {IncidentService} from "./services/incident-service/incident-service";
 import {AccountService} from "./services/account-service/account-service";
 import {LocationService} from "./services/location-service/location-service";
@@ -16,7 +17,7 @@ import app_config = require('./globals');
 })
 export class Blottr {
 
-  private rootPage: any;
+  private rootPage: any = BlankPage;
   db: Storage;
   account: Account;
 
@@ -25,7 +26,7 @@ export class Blottr {
     private locationService: LocationService,
     private events: Events) {
 
-    //this.rootPage = IntroPage;
+    //this.rootPage = ;
 
     platform.ready().then(() => {
 
