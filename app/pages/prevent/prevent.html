@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content overflow-scroll="false">
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
   <ion-refresher (ionRefresh)="loadIncidents($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
