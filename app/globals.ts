@@ -18,11 +18,6 @@ export var incident_map_filter = "incidents-map?city_op=contains&city=";
 /* Map settings */
 export var search_radius = 2000;
 export var search_types = ["police"];
-export var search_icon = { url: '//maps.gstatic.com/mapfiles/ms2/micons/police.png' };
-export var prevent_icon = { url: '//maps.gstatic.com/mapfiles/ms2/micons/caution.png' };
-export var me_icon = {
-    url: '//maps.gstatic.com/mapfiles/mobile/mobileimgs2.png',
-    size: new google.maps.Size(22, 22),
-    origin: new google.maps.Point(0, 18),
-    anchor: new google.maps.Point(11, 11)
-}
+export var search_icon = { url: 'https://maps.gstatic.com/mapfiles/ms2/micons/police.png' };
+export var prevent_icon = { url: 'https://maps.gstatic.com/mapfiles/ms2/micons/caution.png' };
+export var me_icon = {url: 'https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png'};

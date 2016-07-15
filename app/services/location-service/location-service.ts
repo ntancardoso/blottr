@@ -37,6 +37,8 @@ export class LocationService {
         },
         error => {
           console.log("error getting location");
+          if (app_config.is_debug)
+            console.log(error);
         }
       );
     }
