@@ -17,19 +17,27 @@ import app_config = require('./globals');
 })
 export class Blottr {
 
-  private rootPage: any = BlankPage;
+  private rootPage: any;
   db: Storage;
   account: Account;
+  startTime: number = new Date().getTime();
 
   constructor(private platform: Platform,
     private accountService: AccountService,
     private locationService: LocationService,
     private events: Events) {
 
-    //this.rootPage = ;
+    if (app_config.is_debug)
+      console.log("App Started: " + new Date());
+    this.rootPage = BlankPage;
+
+    this.events.subscribe("loginSuccess", () => {
+      this.rootPage = TabsPage;
+    });
 
     platform.ready().then(() => {
-
+      if (app_config.is_debug)
+        console.log("Platform Ready: " + this.getElapsedTime());
       this.db = new Storage(SqlStorage);
 
       // Uncomment to reset the app
@@ -50,31 +58,42 @@ export class Blottr {
   }
 
   initApp() {
+    if (app_config.is_debug)
+      console.log("Init App: " + this.getElapsedTime());
+    this.locationService.refreshCurrentLocation();
 
-      this.locationService.refreshCurrentLocation();
+    if (app_config.is_debug)
+      console.log("Location Ready: " + this.getElapsedTime());
 
-      this.events.subscribe("loginSuccess", () => {
-        this.rootPage = TabsPage;
-      });
 
-      // Check if existing user
-      this.db.get("account").then(data => {
-        if (data !== undefined) {
+    // Check if existing user
+    this.db.get("account").then(data => {
+      if (app_config.is_debug)
+        console.log("Data Ready: " + this.getElapsedTime());
+      if (data !== undefined) {
 
-          //TODO Implement offline mode if there is no network connection
-          this.accountService.tokenLogin(JSON.parse(data));
-
-        } else {
-          // Display intro page for new users w/c allows them to register/login
-          this.rootPage = IntroPage;
-        }
-      },
-        error => {
-          console.log("DB Failure");
-        }
-      );
+        //TODO Implement offline mode if there is no network connection
+        this.accountService.tokenLogin(JSON.parse(data));
+        if (app_config.is_debug)
+          console.log("After Login: " + this.getElapsedTime());
+      } else {
+        // Display intro page for new users w/c allows them to register/login
+        this.rootPage = IntroPage;
+      }
+    },
+      error => {
+        console.log("DB Failure");
+      }
+    );
   }
+
+  getElapsedTime() {
+    return ((new Date().getTime() - this.startTime) / 1000) + " sec";
+  }
+
 }
+
+
 
 
 if (!app_config.is_debug)
