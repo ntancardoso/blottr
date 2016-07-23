@@ -17,12 +17,14 @@ import app_config = require('../../globals');
 export class IncidentService {
   headers: Headers = new Headers({ 'Content-Type': 'application/json' });
   provinces: any;
+  http: Http;
 
-  constructor(private http: Http, private events: Events,
+  constructor(http: Http, private events: Events,
     private accountService: AccountService,
     private locationService: LocationService) {
-
+    this.http = http;
     this.getProvinces();
+    this.headers = this.accountService.authHeaders(this.headers);
   }
 
 
@@ -40,7 +42,7 @@ export class IncidentService {
     * @param drupal formatted disclose model
     */
   disclose(discloseData) {
-    this.http.post(app_config.api_url + app_config.incidents, JSON.stringify(discloseData), { headers: this.accountService.authHeaders(this.headers) }).subscribe(
+    this.http.post(app_config.api_url + app_config.incidents, JSON.stringify(discloseData), { headers: this.accountService.authHeaders(this.headers), withCredentials: true }).subscribe(
       data => {
         console.log("disclose");
 

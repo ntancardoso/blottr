@@ -44,6 +44,13 @@ export class LoginPage {
     console.log("Login account");
     this.account.error = "";
     this.accountServices.tokenLogin(this.account);
+    //this.accountServices.login(this.account);
+  }
+
+
+  fbLogin() {
+    console.log("FB Login account");
+    this.accountServices.fbLogin(this.account);
   }
 
   /**

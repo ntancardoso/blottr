@@ -1,5 +1,6 @@
 import {Component, enableProdMode} from '@angular/core';
 import {Platform, ionicBootstrap, Storage, LocalStorage, SqlStorage, Events} from 'ionic-angular';
+import {Facebook} from 'ionic-native';
 import {StatusBar} from 'ionic-native';
 import {TabsPage} from './pages/tabs/tabs';
 import {IntroPage } from './pages/intro/intro';
@@ -27,8 +28,14 @@ export class Blottr {
     private locationService: LocationService,
     private events: Events) {
 
-    if (app_config.is_debug)
+
+    if (app_config.is_debug) {
       console.log("App Started: " + new Date());
+      let p = this.platform.platforms();
+      for(let i in p)
+        console.log(p[i]); 
+
+    }
     this.rootPage = BlankPage;
 
     this.events.subscribe("loginSuccess", () => {
@@ -40,8 +47,8 @@ export class Blottr {
         console.log("Platform Ready: " + this.getElapsedTime());
       this.db = new Storage(SqlStorage);
 
-      // Uncomment to reset the app
-      //this.reset();
+      if(app_config.app_reset)
+        this.reset();
 
       this.initApp();
 
@@ -73,7 +80,10 @@ export class Blottr {
       if (data !== undefined) {
 
         //TODO Implement offline mode if there is no network connection
-        this.accountService.tokenLogin(JSON.parse(data));
+        if(data.isFB)
+          this.accountService.fbLogin(JSON.parse(data));
+        else
+          this.accountService.tokenLogin(JSON.parse(data));
         if (app_config.is_debug)
           console.log("After Login: " + this.getElapsedTime());
       } else {

@@ -7,4 +7,5 @@ export class Account {
     sessid: string;
     token: string;
     error: string;
+    isFB: boolean;
 }
